@@ -1,0 +1,26 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "CloudFormation template for EventBridge RuleETLPipelineStack-DemoS3PutRuleA4572EFB-3jRvBV8xQ9d1",
+  "Resources": {
+    "Rulecaa531d9": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Name": "ETLPipelineStack-DemoS3PutRuleA4572EFB-3jRvBV8xQ9d1",
+        "EventPattern": "{\"source\":[\"aws.s3\"],\"detail-type\":[\"Object Created\"],\"detail\":{\"bucket\":{\"name\":[\"etlpipelinestack-demodatabucketb4b817a8-7g6xnmub8yix\"]},\"object\":{\"key\":[{\"prefix\":\"raw/\"}]}}}",
+        "State": "ENABLED",
+        "Description": "",
+        "EventBusName": "default",
+        "Targets": [{
+          "Id": "Id13d63704-d6ed-4e9b-ac96-98a32f11229a",
+          "Arn": {
+            "Fn::Sub": "arn:${AWS::Partition}:states:${AWS::Region}:${AWS::AccountId}:stateMachine:DemoStateMachine930D03ED-gfe58iDLWzuM"
+          },
+          "RoleArn": {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/ETLPipelineStack-DemoStateMachineEventsRole5BBE5EC6-2h9dw2bTX9U5"
+          }
+        }]
+      }
+    }
+  },
+  "Parameters": {}
+}

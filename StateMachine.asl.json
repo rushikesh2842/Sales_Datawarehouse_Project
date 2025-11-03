@@ -1,0 +1,61 @@
+{
+  "StartAt": "GlueETLTask",
+  "States": {
+    "GlueETLTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "ResultPath": "$.GlueOutput",
+      "Parameters": {
+        "JobName": "DemoGlueJob-tRWcJUGbjTQB",
+        "Arguments": {
+          "--curated_path": "s3://etlpipelinestack-demodatabucketb4b817a8-7g6xnmub8yix/curated/maze/"
+        }
+      },
+      "Next": "ManifestCreationGlueTask"
+    },
+    "ManifestCreationGlueTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "TimeoutSeconds": 300,
+      "HeartbeatSeconds": 300,
+      "Parameters": {
+        "JobName": "Glue_Manifest_Job",
+        "Arguments": {
+          "--tasktoken.$": "$$.Task.Token"
+        }
+      },
+      "Next": "RedshiftSQLTask"
+    },
+    "RedshiftSQLTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:redshiftdata:executeStatement",
+      "ResultPath": null,
+      "Parameters": {
+        "ClusterIdentifier": "etl-pipeline-redshift-cluster",
+        "Database": "dev",
+        "DbUser": "admin",
+        "Sql": "CALL etl_pipeline_cluster_proc.elt_sales_summary(:bucketname,:manifestfilepath)",
+        "Parameters": [
+          {
+            "Name": "bucketname",
+            "Value.$": "$.bucketname"
+          },
+          {
+            "Name": "manifestfilepath",
+            "Value.$": "$.manifestfilepath"
+          }
+        ]
+      },
+      "Next": "NotifySnsTask"
+    },
+    "NotifySnsTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "End": true,
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:348962335134:ETLPipelineStack-DemoNotificationTopic7D353EE1-TMNAXJiseuId",
+        "Message": "ETL Workflow completed."
+      }
+    }
+  }
+}
