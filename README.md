@@ -8,3 +8,7 @@ This project was created in one of the hackathons from https://www.linkedin.com/
 •	Integrated Amazon Redshift stored procedures for automated upsert operations from staging to core tables using manifest paths.
 
 •	Enabled seamless access to processed data for data scientists via S3 Data Lake, and for data analysts via Redshift tables for large-scale SQL and analytics workloads
+
+More details on the project here:
+
+https://www.linkedin.com/posts/rushikesh-palnitkar_aws-s3-eventbridge-activity-7387216981776576512-P7e3?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADFLe9UBk8g_DOUq_bKIxryPsi0PZfsMV4Q
